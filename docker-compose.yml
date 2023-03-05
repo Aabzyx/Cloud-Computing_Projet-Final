@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  frontend:
+    container_name: frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile_frontend
+    environment:
+      PORT: 80
+      PROXY_API: http://backend:3000/
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - webAppNetwork
+
+  backend:
+    container_name: backend
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/
+    build:
+      context: ./backend
+      dockerfile: Dockerfile_backend
+    depends_on:
+      - mongodb
+    ports:
+      - "3000:3000"
+    networks:
+      - webAppNetwork
+
+  mongodb:
+    image: mongo:latest
+    build:
+      context: .
+      dockerfile: Dockerfile_mongodb
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    command: mongod --bind_ip_all
+    networks:
+      - webAppNetwork
+
+networks:
+  webAppNetwork:
+
+volumes:
+  mongodb_data:
