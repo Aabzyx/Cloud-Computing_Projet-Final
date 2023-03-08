@@ -1,48 +1,69 @@
+#We specify the version compatible with our docker-compose version
 version: '3'
-
+#We create the containers in services
 services:
-  frontend:
-    container_name: frontend
-    build: 
-      context: ./frontend
-    restart: unless-stopped
-    ports:
-      - 4173:4173
-    depends_on:
-      - backend
-    networks:
-      - webAppNetwork
-
-  backend:
-    container_name: backend
-    environment:
-      - MONGODB_URI=mongodb://mongodb:27017/
-      - JWT_SECRET=securewebdev
-    build:
-      context: ./backend
-    restart: unless-stopped
-    depends_on:
-      - mongodb
-    ports:
-      - 3000:3000
-    networks:
-      - webAppNetwork
-
+  #We first create our database container with mongo
   mongodb:
+    #We use the mongo image available on dockerhub
     image: mongo:latest
     container_name: mongodb
+    #We define our volumes and bind mounts
     volumes:
+      #The first bind mounts is the folder containing the script to seed our database
       - ./mongo/mongo-entrypoint:/docker-entrypoint-initdb.d
+      #The two others are the json files to seed our database
       - ./mongo/data.json:/data.json
       - ./mongo/users.json:/users.json
+      #This is the volume to make the database persistent
       - project-db:/data/db
+    #We connect the container to the bridge network 
     networks:
       - webAppNetwork
+    #We execute the script to seed our database when the container start
     command: mongod; /bin/bash /docker-entrypoint-initdb.d/seed.sh
+  
+  #We create our frontend container
+  frontend:
+    container_name: frontend
+    #We build our frontend image with a Dockerfile
+    build: 
+      #Context is used to provide the folder containing the Dockerfile
+      context: ./frontend
+    #Vue js default port
+    ports:
+      - 4173:4173
+    #We wait for the backend to start before starting the frontend
+    depends_on:
+      - backend
+    #We use the same bridge network 
+    networks:
+      - webAppNetwork
 
+  #We create the backend Container
+  backend:
+    container_name: backend
+    #We define the environment variables needed for the backend
+    environment:
+      #Uri to our database container
+      - MONGO_URI=mongodb://mongodb:27017/
+      - JWT_SECRET=securewebdev
+    #We build with a Dockerfile
+    build:
+      context: ./backend
+    #We wait for the database to start before staring the backend
+    depends_on:
+      - mongodb
+    #3000 is the port to access our backend
+    ports:
+      - 3000:3000
+    #We use the same network
+    networks:
+      - webAppNetwork
+
+#We define the bridge network used by the containers
 networks:
   webAppNetwork:
     driver: bridge
-
+#We define the database volume
 volumes:
   project-db:
