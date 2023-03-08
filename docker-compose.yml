@@ -5,12 +5,9 @@ services:
     container_name: frontend
     build: 
       context: ./frontend
-      dockerfile: Dockerfile_frontend
-    environment:
-      PORT: 80
-      PROXY_API: http://backend:3000/
+    restart: unless-stopped
     ports:
-      - "80:80"
+      - 4173:4173
     depends_on:
       - backend
     networks:
@@ -19,33 +16,33 @@ services:
   backend:
     container_name: backend
     environment:
-      MONGODB_URI: mongodb://mongodb:27017/
+      - MONGODB_URI=mongodb://mongodb:27017/
+      - JWT_SECRET=securewebdev
     build:
       context: ./backend
-      dockerfile: Dockerfile_backend
+    restart: unless-stopped
     depends_on:
       - mongodb
     ports:
-      - "3000:3000"
+      - 3000:3000
     networks:
       - webAppNetwork
 
   mongodb:
     image: mongo:latest
-    build:
-      context: .
-      dockerfile: Dockerfile_mongodb
     container_name: mongodb
-    ports:
-      - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
-    command: mongod --bind_ip_all
+      - ./mongo/mongo-entrypoint:/docker-entrypoint-initdb.d
+      - ./mongo/data.json:/data.json
+      - ./mongo/users.json:/users.json
+      - project-db:/data/db
     networks:
       - webAppNetwork
+    command: mongod; /bin/bash /docker-entrypoint-initdb.d/seed.sh
 
 networks:
   webAppNetwork:
+    driver: bridge
 
 volumes:
-  mongodb_data:
+  project-db:

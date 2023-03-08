@@ -60,13 +60,13 @@ export default {
     async fetchFilm() {
       try {
         const data = await fetchFilmInfos(this.filmId);
-        this.filmName = data.filmName;
-        this.filmType = data.filmType;
-        this.filmDirectorName = data.filmDirectorName;
-        this.filmProducerName = data.filmProducerName;
-        this.address = data.address;
-        this.district = data.district;
-        this.year = data.year;
+        this.filmName = data.nom_tournage;
+        this.filmType = data.type_tournage;
+        this.filmDirectorName = data.nom_realisateur;
+        this.filmProducerName = data.nom_producteur;
+        this.address = data.adresse_lieu;
+        this.district = data.ardt_lieu;
+        this.year = data.annee_tournage;
       } catch (error) {
         console.error(error);
       }

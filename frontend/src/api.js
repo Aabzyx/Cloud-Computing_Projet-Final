@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const base = axios.create({ baseURL: 'http://backend:3000/'});
+const base = axios.create({ baseURL: 'http://localhost:3000/'});
 
 export const login = async (username, password) => {
     try {
@@ -48,13 +48,13 @@ export const fetchFilmInfos = async (filmId) => {
 export const postFilm = async (filmName, filmType, filmDirectorName, filmProducerName, address, district, year, filmId) => {
     try {
         await base.patch(`locations/${filmId}`, {
-            filmName: filmName,
-            filmType: filmType,
-            filmDirectorName: filmDirectorName,
-            filmProducerName: filmProducerName,
-            address: address,
-            district: district,
-            year: year
+            nom_tournage: filmName,
+            type_tournage: filmType,
+            nom_realisateur: filmDirectorName,
+            nom_producteur: filmProducerName,
+            adresse_lieu: address,
+            ardt_lieu: district,
+            annee_tournage: year,
         }, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,

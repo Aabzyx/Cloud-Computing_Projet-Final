@@ -2,7 +2,7 @@
   <h2>Films :</h2>
   <div>
     <div v-for="film in currentFilms" :key="film._id">
-      <button @click="goToFilmDetails(film._id)">{{ film.filmName }}</button>
+      <button @click="goToFilmDetails(film._id)">{{ film.nom_tournage }}</button>
     </div>
     <br />
     <div>
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     async fetchFilms() {
-      const { data } = await axios.get('http://backend:3000/locations', {
+      const { data } = await axios.get('http://localhost:3000/locations', {
         headers: {
           'Authorization': `Bearer ${this.token}`,
         }});

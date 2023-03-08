@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h2>Nom : {{filmInfos.filmName}}</h2>
-    <h4>Type : {{filmInfos.filmType}}</h4>
-    <h4>Nom du(des) directeur(s) : {{filmInfos.filmDirectorName}}</h4>
-    <h4>Société de production : {{filmInfos.filmProducerName}}</h4>
-    <h4>Adresse : {{filmInfos.address}}</h4>
-    <h4>Arrondissemnt : {{filmInfos.district}}</h4>
-    <h4>Année : {{filmInfos.year}}</h4>
+    <h2>Nom : {{filmInfos.nom_tournage}}</h2>
+    <h4>Type : {{filmInfos.type_tournage}}</h4>
+    <h4>Nom du(des) directeur(s) : {{filmInfos.nom_realisateur}}</h4>
+    <h4>Société de production : {{filmInfos.nom_producteur}}</h4>
+    <h4>Adresse : {{filmInfos.adresse_lieu}}</h4>
+    <h4>Arrondissemnt : {{filmInfos.ardt_lieu}}</h4>
+    <h4>Année : {{filmInfos.annee_tournage}}</h4>
   </div>
   <div v-if="role === 'admin'">
     <button @click="goToEditFilm(filmId)">Edit</button>
